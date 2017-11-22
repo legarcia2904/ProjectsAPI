@@ -139,7 +139,7 @@ exports.getProyectosPorColaborador = function (req, res, next) {
         if(err || !colaborador){
             return res.status(500).jsonp({error:'500', descrip:err.message});
         }else{
-            Proyectos.find({'colaborador':req.params.id}, function (err, proyecto) {
+            Proyectos.find({'colaborador':req.params.id}).populate('colaborador').exec(function (err, proyecto) {
                 if(err){
                     return res.status(500).jsonp({error:'500', descrip:err.message});
                 }else{
@@ -149,10 +149,8 @@ exports.getProyectosPorColaborador = function (req, res, next) {
                     }else{
                         return res.status(200).jsonp(proyecto);
                     }
-
                 }
             });
         }
     });
-
 };
