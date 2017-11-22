@@ -63,43 +63,37 @@ exports.getById = function(req, res, next){
 };
 
 /**
- * Actualizar el nombre del colaborador identificado con el ID. El
+ * Actualizar los datos del colaborador identificado con el ID. El
  método debe de regresar el registro actualizado. En
- caso de no encontrar proyectos del colaborador, retornar un
+ caso de no encontrar el colaborador solicitado, retornar un
  objeto JSON con un código y descripción del error.
  */
 exports.updateColaborador = function (req, res, next) {
     console.log('PUT /colaboradores/:id');
     console.log(req.params.id);
     console.log(req.body);
-    Proyectos.find({'colaborador':req.params.id}, function (err, proyecto) {
-       if(proyecto.length>0){
-           Colaboradores.findById(req.params.id,function (err, colaborador) {
-               if(err){
-                   res.status(500).jsonp({error:'500', descrip:err.message});
-               }else{
-                   req.body.nombre?colaborador.nombre = req.body.nombre:null;
-                   req.body.descripcion?colaborador.descripcion = req.body.descripcion:null;
-                   req.body.email?colaborador.email = req.body.email:null
-                   req.body.categoria?colaborador.categoria = req.body.categoria:null;
-                   req.body.sitio_web?colaborador.sitio_web = req.body.sitio_web:null;
-                   colaborador.save(function (err, colaborador) {
-                       if(err) return res.status(500).jsonp({error:'500', descrip:err.message});
-                       Proyectos.find({'colaborador':req.params.id}, function (err, proyecto) {
-                           if(err){
-                               return res.status(500).jsonp({error:'500', descrip:err.message});
-                           }else{
-                               colaborador.proyectos=proyecto;
-                               return res.status(200).jsonp(colaborador);
-                           }
-                       });
-                   });
-               }
-           });
+   Colaboradores.findById(req.params.id,function (err, colaborador) {
+       if(err){
+           res.status(500).jsonp({error:'500', descrip:err.message});
        }else{
-           return res.status(500).jsonp({error:'500', descrip:"No existen proyectos del colaborador ingresado."});
+           req.body.nombre?colaborador.nombre = req.body.nombre:null;
+           req.body.descripcion?colaborador.descripcion = req.body.descripcion:null;
+           req.body.email?colaborador.email = req.body.email:null
+           req.body.categoria?colaborador.categoria = req.body.categoria:null;
+           req.body.sitio_web?colaborador.sitio_web = req.body.sitio_web:null;
+           colaborador.save(function (err, colaborador) {
+               if(err) return res.status(500).jsonp({error:'500', descrip:err.message});
+               Proyectos.find({'colaborador':req.params.id}, function (err, proyecto) {
+                   if(err){
+                       return res.status(200).jsonp(colaborador);
+                   }else{
+                       colaborador.proyectos=proyecto;
+                       return res.status(200).jsonp(colaborador);
+                   }
+               });
+           });
        }
-    });
+   })
 };
 
 /**
