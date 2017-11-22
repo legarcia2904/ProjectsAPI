@@ -42,22 +42,12 @@ exports.addColaborador = function(req, res, next){
  */
 exports.getById = function(req, res, next){
     console.log('GET /colaboradores:id');
-
     Colaboradores.findById(req.params.id, function (err, colaborador) {
         if(err){
             return res.status(500).jsonp({error:'500', descrip:err.message});
         }
-        if(colaborador){
-            Proyectos.find({'colaborador':req.params.id}, function (err, proyecto) {
-                if(err){
-                    return res.status(500).jsonp({error:'500', descrip:err.message});
-                }else{
-                    colaborador.proyectos=proyecto;
-                    return res.status(200).jsonp(colaborador);
-                }
-            });
-        }else{
-            return res.status(500).jsonp({error:'500', descrip:"Colaborador no existente"});
+        else {
+            return res.status(200).jsonp(colaborador);
         }
     });
 };
@@ -82,15 +72,12 @@ exports.updateColaborador = function (req, res, next) {
            req.body.categoria?colaborador.categoria = req.body.categoria:null;
            req.body.sitio_web?colaborador.sitio_web = req.body.sitio_web:null;
            colaborador.save(function (err, colaborador) {
-               if(err) return res.status(500).jsonp({error:'500', descrip:err.message});
-               Proyectos.find({'colaborador':req.params.id}, function (err, proyecto) {
-                   if(err){
-                       return res.status(200).jsonp(colaborador);
-                   }else{
-                       colaborador.proyectos=proyecto;
-                       return res.status(200).jsonp(colaborador);
-                   }
-               });
+               if(err){
+                   return res.status(500).jsonp({error:'500', descrip:err.message});
+               }
+               else{
+                   return res.status(200).jsonp(colaborador);
+               }
            });
        }
    })
@@ -107,11 +94,6 @@ exports.deleteColaborador = function(req, res, next){
     console.log('DELETE /colaboradores/:id');
     console.log(req.params.id);
 
-    var proyecto_conjunto =[];
-    Proyectos.find({'colaborador':req.params.id}, function (err, proyecto) {
-        proyecto_conjunto =proyecto;
-    });
-
     Colaboradores.findById(req.params.id, function (err, colaborador) {
        if(err || !colaborador){
            return res.status(500).jsonp({error:'505', descrip:"Registro no existente."});
@@ -121,7 +103,6 @@ exports.deleteColaborador = function(req, res, next){
                    if(err){
                        return res.status(500).jsonp({error:'500', descrip:err.message});
                    }else{
-                       colaborador.proyectos = proyecto_conjunto;
                        res.status(200).jsonp(colaborador);
                    }
                });
@@ -143,7 +124,6 @@ exports.getProyectosPorColaborador = function (req, res, next) {
                 if(err){
                     return res.status(500).jsonp({error:'500', descrip:err.message});
                 }else{
-                    colaborador.proyectos=proyecto;
                     if(proyecto.length==0){
                         return res.status(500).jsonp({error:'500', descrip:"Actualmente el colaborador no cuenta con proyectos."});
                     }else{

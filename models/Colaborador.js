@@ -8,11 +8,7 @@ var colaboradorSchema = new Schema({
     descripcion:{type:String},
     email:{type:String},
     categoria:{type:String},
-    sitio_web:{type:String},
-    proyectos: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Proyecto'
-    }]
+    sitio_web:{type:String}
 },
 {
     versionKey:false
