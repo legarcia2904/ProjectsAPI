@@ -8,7 +8,7 @@ var Proyectos = mongoose.model('Proyecto');
 */
 exports.getColaboradores = function(req, res, next){
     console.log('GET /colaboradores');
-    Colaboradores.find(function (err, colaboradores) {
+    Colaboradores.find(req.query, function (err, colaboradores) {
         if(err){
             return res.status(500).jsonp({error:'500', descrip:err.message});
         }else{

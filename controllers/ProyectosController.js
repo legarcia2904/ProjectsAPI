@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Proyectos = mongoose.model('Proyecto');
 
 exports.getProyectos = function(req, res, next){
-  Proyectos.find().populate('colaborador').exec(function (err, proyectos) {
+  Proyectos.find(req.query).populate('colaborador').exec(function (err, proyectos) {
       if(err){
           res.status(500).jsonp({error:'500', descrip:err.message});
       }else{
@@ -26,11 +26,15 @@ exports.addProyecto = function(req, res, next){
     });
 
     proyecto.save(function (err, proyecto) {
-        if(err) return res.status(500).jsonp({error:'500', descrip:err.message});
-        Proyectos.findById(proyecto._id).populate('colaborador').exec(function (err, proyecto) {
-            if(err) return res.status(500).jsonp({error:'500', descrip:err.message});
-            res.status(200).jsonp(proyecto);
-        })
+        if(err){
+            return res.status(500).jsonp({error:'500', descrip:err.message});
+        }
+        else{
+            Proyectos.findById(proyecto._id).populate('colaborador').exec(function (err, proyecto) {
+                if(err) return res.status(500).jsonp({error:'500', descrip:err.message});
+                res.status(200).jsonp(proyecto);
+            })
+        }
     });
 };
 
