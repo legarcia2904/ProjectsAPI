@@ -22,3 +22,6 @@ mongo.exe
 
 // Ejecutar la aplicación
 npm start
+
+# Documentación del API:
+https://documenter.getpostman.com/view/2966984/projectapi/7ED8t7u
